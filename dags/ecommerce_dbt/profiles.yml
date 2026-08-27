@@ -1,0 +1,13 @@
+ecommerce_dbt:
+  target: trino
+
+  outputs:
+    trino:
+      type: trino
+      method: none
+      user: admin
+      database: iceberg
+      schema: bronze
+      threads: 1
+      host: trino-coordinator
+      port: 8080

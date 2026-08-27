@@ -1,0 +1,56 @@
+{
+    "path_count": 142,
+    "parsed_path_count": 142,
+    "static_analysis_path_count": 11,
+    "static_analysis_parsed_path_count": 11,
+    "is_partial_parse_enabled": false,
+    "is_static_analysis_enabled": true,
+    "read_files_elapsed": 0.5122217999996792,
+    "load_macros_elapsed": 1.005530906999411,
+    "parse_project_elapsed": 1.5278307469998254,
+    "patch_sources_elapsed": 2.017600036197109e-05,
+    "process_manifest_elapsed": 0.05446773299991037,
+    "load_all_elapsed": 3.335387555000125,
+    "projects": [
+        {
+            "project_name": "ecommerce_dbt",
+            "elapsed": 1.5162936749993605,
+            "parsers": [
+                {
+                    "parser": "model",
+                    "elapsed": 0.5813859919999231,
+                    "parsed_path_count": 11
+                },
+                {
+                    "parser": "seed",
+                    "elapsed": 0.4350420339997072,
+                    "parsed_path_count": 4
+                },
+                {
+                    "parser": "test",
+                    "elapsed": 0.4849662669994359,
+                    "parsed_path_count": 1
+                }
+            ],
+            "parsed_path_count": 16
+        },
+        {
+            "project_name": "dbt_trino",
+            "elapsed": 0.006695328999740013,
+            "parsers": [],
+            "parsed_path_count": 0
+        },
+        {
+            "project_name": "dbt",
+            "elapsed": 0.004423213999871223,
+            "parsers": [
+                {
+                    "parser": "doc",
+                    "elapsed": 0.0002483950001987978,
+                    "parsed_path_count": 1
+                }
+            ],
+            "parsed_path_count": 1
+        }
+    ]
+}
