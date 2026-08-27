@@ -104,7 +104,6 @@ flowchart TB
     class ICEBERG,MINIO,PARQUET storage;
 
 ```
-ده **الجزء التاني** (بيحتوي على الـ Workflow، تفاصيل الـ Medallion Model، الـ Docker Infrastructure، ونقاط الـ Endpoints والـ Components):
 
 ---
 
@@ -269,3 +268,235 @@ Trino is the distributed SQL engine executing the actual queries ("Who executes 
 
 ---
 
+## 📁 Project Structure
+
+```text
+.
+├── dags/
+│   ├── ecommerce_dag.py          # Primary medallion Airflow DAG
+│   ├── dbt_operator.py           # Custom Python BaseOperator for dbt
+│   └── ecommerce_dbt/            # Complete dbt Core project
+│       ├── dbt_project.yml       # dbt configurations, tags, and materializations[cite: 2]
+│       ├── profiles.yml          # Trino coordinator connection settings[cite: 2]
+│       ├── models/
+│       │   ├── bronze/           # Source schema transformations (CSV -> Iceberg)[cite: 2]
+│       │   │   ├── bronze_customer_events.sql
+│       │   │   └── schema.yml    # Data quality tests (unique, not_null)[cite: 2]
+│       │   ├── silver/           # Enriched business entities & sessionization[cite: 2]
+│       │   └── gold/             # Aggregated KPI data marts & BI models[cite: 2]
+│       └── seeds/                # Raw E-commerce seed CSVs[cite: 2]
+├── config/                       # Airflow & service configuration mounts
+├── trino/
+│   └── catalog/
+│       └── iceberg.properties    # Trino Iceberg-Nessie-MinIO catalog connector[cite: 2]
+├── Dockerfile                    # Custom Airflow image with dbt-trino & dependencies
+├── docker-compose.yaml           # Full infrastructure orchestration
+├── pyproject.toml                # Project dependency manifest
+├── requirements.txt              # Pinned Python package dependencies (Airflow 3.0.6, etc.)
+└── README.md
+
+```
+
+## ⚙️ Configuration
+
+### Trino Catalog Configuration (`trino/catalog/iceberg.properties`)
+
+This file is the most critical integration point, linking the query engine to the catalog and storage layer:
+
+```properties
+connector.name=iceberg
+iceberg.catalog.type=nessie
+iceberg.nessie-catalog.uri=http://nessie-catalog:19120/api/v1
+iceberg.nessie-catalog.ref=main
+iceberg.nessie-catalog.default-warehouse-dir=s3://lakehouse
+fs.native-s3.enabled=true
+s3.endpoint=http://minio:9000
+s3.region=us-east-1
+s3.path-style-access=true
+
+```
+
+### dbt Project Profile (`profiles.yml`)
+
+Configures dbt to connect directly to the Trino Coordinator over the Docker network:
+
+```yaml
+ecommerce_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      method: none
+      user: admin
+      database: iceberg
+      schema: bronze
+      threads: 3
+      host: trino-coordinator
+      port: 8080
+
+```
+
+## 🚀 Quick Start
+
+### 1. Clone & Bootstrap Stack
+
+Use modern Docker Compose syntax to clone and build the custom images:
+
+```bash
+git clone https://github.com/omaga333/Distributed-Data-Lakehouse.git
+cd Distributed-Data-Lakehouse
+
+# Build custom images and start the entire cluster in detached mode
+docker compose up -d --build
+
+# Verify container statuses and health
+docker compose ps
+
+```
+
+### 2. Verify Services
+
+Check the startup sequences of the core control plane services to ensure they are communicating properly:
+
+```bash
+# Check Nessie Catalog startup
+docker compose logs nessie-catalog --tail 100
+
+# Check Trino Coordinator
+docker compose logs trino-coordinator --tail 100
+
+# Check Airflow Worker readiness
+docker compose logs airflow-worker --tail 100
+
+```
+
+### 3. Graceful Shutdown & Cleanup
+
+```bash
+# Stop containers without losing data
+docker compose down
+
+# Stop containers and wipe volumes for a clean slate
+docker compose down -v
+
+```
+
+## ✅ Validation & Smoke Tests
+
+### Validating Trino, Nessie & MinIO Integration
+
+You can use any SQL Client (like DBeaver) connecting to `localhost:9080` or use the Trino CLI natively via Docker:
+
+```bash
+docker compose exec trino-coordinator trino
+
+```
+
+Run these commands to validate catalog connections:
+
+```sql
+-- 1. Ensure the iceberg catalog is visible
+SHOW CATALOGS;
+
+-- 2. Verify namespaces
+SHOW SCHEMAS FROM iceberg;
+
+-- 3. Create a test schema and table
+CREATE SCHEMA IF NOT EXISTS iceberg.lakehouse;
+
+CREATE TABLE iceberg.lakehouse.test_table (
+    id INTEGER,
+    name VARCHAR
+);
+
+-- 4. Insert data and query it
+INSERT INTO iceberg.lakehouse.test_table VALUES (1, 'Ahmed'), (2, 'Mohamed');
+
+SELECT * FROM iceberg.lakehouse.test_table;
+
+```
+
+*(Note: Creating a MinIO bucket does not automatically create Iceberg namespaces; you must explicitly run `CREATE SCHEMA` first.)*
+
+### Running the Pipeline
+
+1. Navigate to the Airflow UI at `http://localhost:8080`.
+2. Login with standard configured credentials.
+3. Unpause `ecommerce_dag_pipeline`.
+4. Trigger the DAG manually and monitor the execution logs as the Custom `DbtOperator` passes the context to `dbtRunner`.
+
+## 🧠 Engineering Highlights
+
+* **Git-for-Data Isolation:** By integrating Project Nessie, data engineers can test new models on a `dev` branch. Setting `iceberg.nessie-catalog.ref=dev` routes Trino to a completely isolated state of the lakehouse, avoiding corruption of `main` production data.
+
+
+* **Intelligent Resource Scaling:** During testing, the pipeline encountered `Maximum retry exceeded` errors due to RAM starvation when running too many Trino workers concurrently with Airflow and dbt. By deliberately downscaling to **1 Trino worker** and limiting threads, local performance stabilized, proving that horizontal scaling must respect underlying hardware constraints.
+
+
+* **Custom Pythonic `DbtOperator`:** Instead of running messy `BashOperator` scripts, a custom operator was built using `dbtRunner`. It automatically handles checking for project directories, generating dynamic log directories, parsing command arguments, and natively failing the Airflow task if the Python invocation fails.
+
+
+* **Complete Lakehouse Decoupling:** Airflow orchestrates, dbt transforms, Trino queries, Iceberg abstracts the tables, and MinIO stores the files. Every layer is independently scalable and replaceable.
+
+
+
+## 🛠️ Troubleshooting
+
+* **System Freeze / "Maximum retry exceeded" Error in Airflow:**
+* **Cause:** Host system is running out of RAM (OOM) due to multiple Trino workers and high dbt thread counts competing for resources.
+
+
+* **Fix:** Scale down Trino to 1 Worker in `docker-compose.yaml` and reduce the dbt thread count in `profiles.yml` to 1 or 2. Restart with `docker compose down -v` and `docker compose up -d`.
+
+
+
+
+* **Trino cannot connect to MinIO:**
+* **Symptom:** `S3Exception: Access Denied` or connection refused in Trino logs.
+* **Fix:** Ensure `s3.endpoint=http://minio:9000` is set and `s3.path-style-access=true` is enabled in `iceberg.properties`. Do not use `localhost` inside container-to-container configurations.
+
+
+
+
+* **Nessie Manifest Error / Tag Doesn't Exist:**
+* **Symptom:** `manifest for project Nessie... is not found` during docker image pull.
+
+
+* **Fix:** Ensure the exact image tag exists on Docker Hub (e.g., `0.76.6` instead of a non-existent version).
+
+
+
+
+* **Port Conflicts:**
+* **Symptom:** Docker fails to bind `0.0.0.0:8080`.
+* **Fix:** Ensure you are accessing Trino via `localhost:9080`. Trino's host port was mapped to 9080 to prevent conflicts with Airflow's 8080 UI port.
+
+
+
+
+
+## 🔐 Security
+
+* **Environment Variables:** Ensure any `.env` file containing MinIO root user/password and Postgres credentials is added to `.gitignore` and never committed to version control.
+
+
+* **Development Credentials:** The current configuration (e.g., MinIO user `minioadmin`) is for **local development and portfolio demonstration purposes only**.
+
+
+* **Production:** In a production deployment, inject credentials at runtime using secrets management tools (e.g., HashiCorp Vault, AWS Secrets Manager) instead of hardcoding them into Docker Compose files.
+
+## 🗺️ Roadmap
+
+**Current Status:** Active Development / Learning / Portfolio Project
+
+### Planned Future Improvements
+
+* [ ] **Apache Spark**: Integrate Spark for heavy ML feature processing.
+* [ ] **Streaming Ingestion**: Introduce Apache Kafka / Redpanda for real-time E-commerce events.
+* [ ] **Data Quality Checkpoints**: Implement Soda Core or Great Expectations for robust pipeline assertions before publishing to the Gold layer.
+* [ ] **Cloud Migration**: Provide Terraform configuration to deploy the stack to AWS (EKS, S3, RDS).
+* [ ] **CI/CD pipeline**: Add GitHub Actions for linting SQL (`sqlfluff`) and automated testing of dbt models.
+
+---
+
+**Author**: [omaga333](https://www.google.com/search?q=https://github.com/omaga333) | **Repository**: [Distributed-Data-Lakehouse](https://github.com/omaga333/Distributed-Data-Lakehouse)
