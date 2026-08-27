@@ -107,6 +107,10 @@ flowchart TB
 
 ---
 
+ده **الجزء التاني** (بيحتوي على الـ Workflow، تفاصيل الـ Medallion Model، الـ Docker Infrastructure، ونقاط الـ Endpoints والـ Components):
+
+---
+
 ## 🔄 End-to-End Data Workflow
 
 The data pipeline runs on a scheduled cadence (e.g., every 15 minutes) processing high volumes of raw E-commerce events.
@@ -219,14 +223,19 @@ The environment is strictly containerized via Docker Compose. Understanding the 
 | Service | Host URL | Container URL | Purpose |
 | --- | --- | --- | --- |
 | **Airflow UI** | `http://localhost:8080` | `http://airflow-apiserver:8080` | Monitor DAG runs, task logs, and schedules.
+
  |
 | **Trino UI** | `http://localhost:9080` | `http://trino-coordinator:8080` | View query execution plans and worker stats.
+
  |
 | **MinIO API** | `http://localhost:9000` | `http://minio:9000` | S3 API Endpoint for Iceberg table file writes.
+
  |
 | **MinIO Console** | `http://localhost:9001` | `http://minio:9001` | Object browser UI to inspect Parquet data files.
+
  |
 | **Nessie Catalog** | `http://localhost:19120` | `http://nessie-catalog:19120` | Catalog REST API for querying metadata branches.
+
  |
 
 ---
@@ -259,6 +268,9 @@ Trino is the distributed SQL engine executing the actual queries ("Who executes 
 
 * **Nessie**: Acts as "Git for Data". It allows Trino to point to different branches of the catalog (e.g., `main` vs `dev`). You can isolate development transformations in the `dev` branch without affecting production `main` data.
 
+
+
+---
 
 
 ---
