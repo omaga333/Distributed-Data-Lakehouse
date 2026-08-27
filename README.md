@@ -1,12 +1,11 @@
-أكيد، هقسم لك الـ README على أجزاء (رسايل) منفصلة عشان يكون أسهل في النسخ والتعديل، وميقطعش أو يلخبط في التنسيق. كمان ظبطت الروابط بتاعة الصور عشان تشتغل معاك مظبوط، ورتبت الجزء بتاع الـ Project Structure.
 
-ده **الجزء الأول** (بيحتوي على المقدمة، الفهرس، والـ Architecture):
 
 ---
 
 # 🏛️ Distributed Data Lakehouse
 
 ### Enterprise-Grade Lakehouse Architecture Powered by Trino, Apache Iceberg, Project Nessie, dbt Core & Apache Airflow
+![Uploading Screenshot 2026-08-27 182047.png…]()
 
 ---
 
