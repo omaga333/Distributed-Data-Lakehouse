@@ -33,7 +33,17 @@
 ## 📌 Executive Summary
 
 The **Distributed Data Lakehouse** is an end-to-end analytical data platform designed to process high-volume E-commerce data efficiently. It completely decouples storage, metadata, compute, and orchestration, resolving the limitations of traditional Data Warehouses (inflexibility, high cost) and Data Lakes (data swamps, lack of ACID guarantees).
-
+<p align="center">
+  <img src="https://img.shields.io/badge/Apache%20Airflow-3.0.6-017CEE?style=for-the-badge&logo=Apache%20Airflow&logoColor=white" alt="Apache Airflow" />
+  <img src="https://img.shields.io/badge/Trino-476-DD00A1?style=for-the-badge&logo=trino&logoColor=white" alt="Trino" />
+  <img src="https://img.shields.io/badge/Apache%20Iceberg-Table%20Format-blue?style=for-the-badge&logo=apache&logoColor=white" alt="Apache Iceberg" />
+  <img src="https://img.shields.io/badge/Project%20Nessie-0.76.6-00A4A6?style=for-the-badge&logo=git&logoColor=white" alt="Project Nessie" />
+  <img src="https://img.shields.io/badge/dbt--core-1.10.x-FF694B?style=for-the-badge&logo=dbt&logoColor=white" alt="dbt Core" />
+  <img src="https://img.shields.io/badge/MinIO-S3%20Compatible-C72C48?style=for-the-badge&logo=minio&logoColor=white" alt="MinIO" />
+  <img src="https://img.shields.io/badge/Docker%20Compose-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker Compose" />
+  <img src="https://img.shields.io/badge/PostgreSQL-13-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
+  <img src="https://img.shields.io/badge/Redis-7.2-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
+</p>
 At its core, this project demonstrates a highly robust **ELT pipeline**:
 
 * **Storage & Format**: Raw and processed data are stored in **MinIO** as highly optimized Parquet files managed by **Apache Iceberg** table formats.
