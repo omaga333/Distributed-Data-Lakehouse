@@ -12,21 +12,21 @@
 
 ## 📖 Table of Contents
 
-* [Executive Summary](https://www.google.com/search?q=%23-executive-summary)
-* [Architecture & Core Concepts](https://www.google.com/search?q=%23%EF%B8%8F-distributed-data-lakehouse-architecture)
-* [End-to-End Data Workflow](https://www.google.com/search?q=%23-end-to-end-data-workflow)
-* [The Medallion Data Model](https://www.google.com/search?q=%23-the-medallion-data-model)
-* [Dockerized Infrastructure & Networking](https://www.google.com/search?q=%23-dockerized-infrastructure--networking)
-* [Service Endpoints](https://www.google.com/search?q=%23-service-endpoints)
-* [Deep Component Breakdown](https://www.google.com/search?q=%23-deep-component-breakdown)
-* [Project Structure](https://www.google.com/search?q=%23-project-structure)
-* [Configuration](https://www.google.com/search?q=%23-configuration)
-* [Quick Start & Deployment Guide](https://www.google.com/search?q=%23-quick-start)
-* [Validation & Smoke Tests](https://www.google.com/search?q=%23-validation--smoke-tests)
-* [Engineering Highlights](https://www.google.com/search?q=%23-engineering-highlights)
-* [Troubleshooting](https://www.google.com/search?q=%23-troubleshooting)
-* [Security](https://www.google.com/search?q=%23-security)
-* [Roadmap](https://www.google.com/search?q=%23-roadmap)
+- [Executive Summary](#-executive-summary)
+- [Architecture & Core Concepts](#️-distributed-data-lakehouse-architecture)
+- [End-to-End Data Workflow](#-end-to-end-data-workflow)
+- [The Medallion Data Model](#-the-medallion-data-model)
+- [Dockerized Infrastructure & Networking](#-dockerized-infrastructure--networking)
+- [Service Endpoints](#-service-endpoints)
+- [Deep Component Breakdown](#-deep-component-breakdown)
+- [Project Structure](#-project-structure)
+- [Configuration](#️-configuration)
+- [Quick Start & Deployment Guide](#-quick-start)
+- [Validation & Smoke Tests](#-validation--smoke-tests)
+- [Engineering Highlights](#-engineering-highlights)
+- [Troubleshooting](#️-troubleshooting)
+- [Security](#-security)
+- [Roadmap](#️-roadmap)
 
 ---
 
