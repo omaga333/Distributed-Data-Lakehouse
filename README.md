@@ -59,7 +59,7 @@ At its core, this project demonstrates a highly robust **ELT_pipeline** :
 
 ---
 
-## 🏗️ Distributed Data Lakehouse Architecture
+## 🏗️ Distributed Data Lakehouse Architecture Data Workflow
 
 ```mermaid
 flowchart TB
@@ -116,51 +116,15 @@ flowchart TB
 
 ```
 
----
-## 🔄 End-to-End Data Workflow
+<img width="1787" height="876" alt="Screenshot 2026-08-27 175231" src="https://github.com/user-attachments/assets/4f294926-b80c-4a98-bca4-d7c577abdb84" />
 
-The data pipeline runs on a scheduled cadence (e.g., every 15 minutes) processing high volumes of raw E-commerce events[cite: 2].
+<img width="1526" height="527" alt="Screenshot 2026-08-27 175647" src="https://github.com/user-attachments/assets/316b1a18-616c-4f52-9fd5-9e9fbf5199bc" />
 
-```mermaid
-sequenceDiagram
-    autonumber
-    participant AF as Airflow
-    participant DBT as dbt Core
-    participant TR as Trino
-    participant NES as Nessie
-    participant S3 as MinIO
+<img width="1387" height="336" alt="Screenshot 2026-08-27 175452" src="https://github.com/user-attachments/assets/24dba79c-c0da-4385-82dc-40e2eb403c87" />
 
-    AF->>AF: execute start_pipeline()
-    AF->>DBT: run seed_bronze() via DbtOperator
-    DBT->>TR: Check for existing raw data
-    opt If no data
-        DBT->>TR: dbt seed (Load raw E-commerce CSVs)
-        TR->>S3: Write raw Parquet
-    end
-    
-    Note over AF,S3: Bronze Layer Processing
-    AF->>DBT: dbt run --select tag:bronze
-    DBT->>TR: Standardize types, handle NULLs
-    TR->>NES: Commit Snapshot to 'main'
-    AF->>AF: validate_bronze_data()
-    
-    Note over AF,S3: Silver Layer Processing
-    AF->>DBT: dbt run --select tag:silver
-    DBT->>TR: Apply business logic, sessionization, joins
-    TR->>S3: Write cleaned Parquet files
-    TR->>NES: Commit Snapshot to 'main'
-    AF->>AF: validate_silver_data()
-    
-    Note over AF,S3: Gold Layer Processing
-    AF->>DBT: dbt run --select tag:gold
-    DBT->>TR: Calculate metrics, KPIs, daily aggregates
-    TR->>S3: Write aggregated Parquet files
-    TR->>NES: Commit Snapshot to 'main'
-    AF->>AF: validate_gold_data()
-    
-    AF->>DBT: dbt docs generate
-    AF->>AF: end_pipeline()
-```
+<img width="1338" height="915" alt="Screenshot 2026-08-27 180933" src="https://github.com/user-attachments/assets/6d0b58ec-2ea5-4e98-9539-08d7a825e4f4" />
+
+<img width="1717" height="802" alt="Screenshot 2026-08-27 181042" src="https://github.com/user-attachments/assets/82c97226-d7f6-428f-a96c-77abae03830f" />
 
 ---
 
