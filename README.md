@@ -106,17 +106,9 @@ flowchart TB
 ```
 
 ---
-
-ده **الجزء التاني** (بيحتوي على الـ Workflow، تفاصيل الـ Medallion Model، الـ Docker Infrastructure، ونقاط الـ Endpoints والـ Components):
-
----
-تم تعديل تنسيق الجداول (بإزالة الرموز التعبيرية وتوحيد الفواصل) لضمان ظهورها بشكل سليم على أي محرر Markdown أو GitHub. إليك **الجزء الثاني** بالكامل جاهزاً للنسخ:
-
----
-
 ## 🔄 End-to-End Data Workflow
 
-The data pipeline runs on a scheduled cadence (e.g., every 15 minutes) processing high volumes of raw E-commerce events.
+The data pipeline runs on a scheduled cadence (e.g., every 15 minutes) processing high volumes of raw E-commerce events[cite: 2].
 
 ```mermaid
 sequenceDiagram
@@ -157,32 +149,19 @@ sequenceDiagram
     
     AF->>DBT: dbt docs generate
     AF->>AF: end_pipeline()
-
 ```
 
 ---
 
 ## 📊 The Medallion Data Model
 
-The lakehouse adopts the Medallion Architecture to progressively improve data structure, ensuring analytics dashboards only read optimized, heavily-aggregated data.
+The lakehouse adopts the Medallion Architecture to progressively improve data structure, ensuring analytics dashboards only read optimized, heavily-aggregated data[cite: 2]. 
 
 | Layer | Objective & Transformations | Examples from E-commerce Data |
-| --- | --- | --- |
-| **Bronze** | Stores raw source data. Modifies timestamps, handles empty strings (`''` to `NULL`), and adds audit metadata (`ingested_at`, `source_system`).
-
- | `bronze_customer_events`, `bronze_inventory_snapshots`, `bronze_payment_transactions`, `bronze_support_tickets`.
-
- |
-| **Silver** | Data cleaning, standardizing, and applying business logic. Handles sessionization (grouping user clicks), risk profiling for payments, and stock categorizations (Out of Stock, Low Stock).
-
- | `silver_customer_sessions`, `silver_inventory_status`, `silver_payment_profiles`, `silver_support_metrics`.
-
- |
-| **Gold** | Business-ready data. Pre-calculates heavy metrics, KPIs, aggregations, and daily rollups. Ready for BI tools (Power BI, Tableau) to consume directly without processing lag.
-
- | `gold_daily_metrics`, `gold_customer_summary`, `gold_product_summary`.
-
- |
+| :--- | :--- | :--- |
+| **Bronze** 🥉 | Stores raw source data. Modifies timestamps, handles empty strings (`''` to `NULL`), and adds audit metadata (`ingested_at`, `source_system`)[cite: 2]. | `bronze_customer_events`, `bronze_inventory_snapshots`, `bronze_payment_transactions`, `bronze_support_tickets`[cite: 2] |
+| **Silver** 🥈 | Data cleaning, standardizing, and applying business logic. Handles sessionization (grouping user clicks), risk profiling for payments, and stock categorizations (Out of Stock, Low Stock)[cite: 2]. | `silver_customer_sessions`, `silver_inventory_status`, `silver_payment_profiles`, `silver_support_metrics`[cite: 2] |
+| **Gold** 🥇 | Business-ready data. Pre-calculates heavy metrics, KPIs, aggregations, and daily rollups. Ready for BI tools (Power BI, Tableau) to consume directly without processing lag[cite: 2]. | `gold_daily_metrics`, `gold_customer_summary`, `gold_product_summary`[cite: 2] |
 
 ---
 
@@ -190,93 +169,53 @@ The lakehouse adopts the Medallion Architecture to progressively improve data st
 
 The environment is strictly containerized via Docker Compose. Understanding the networking routing is critical:
 
-* **Host Networking:** For accessing UIs from your local browser (e.g., `localhost:9080` routes to Trino).
-* **Container Networking:** For services communicating internally (e.g., Airflow accessing Trino via `trino-coordinator:8080`).
-
-
+*   **Host Networking:** For accessing UIs from your local browser (e.g., `localhost:9080` routes to Trino).
+*   **Container Networking:** For services communicating internally (e.g., Airflow accessing Trino via `trino-coordinator:8080`)[cite: 2].
 
 | Service | Role | Host Port | Container Port | Exposure | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `postgres` | Airflow Metadata DB | - | `5432` | Internal | Stores Airflow DAG states and configurations.
-
- |
-| `redis` | Celery Broker | - | `6379` | Internal | Message broker for Airflow CeleryExecutor.
-
- |
-| `minio` | S3 Object Storage | `9000`, `9001` | `9000`, `9001` | **External** | API (9000), Console Browser (9001).
-
- |
-| `nessie-catalog` | Iceberg Catalog | `19120` | `19120` | **External** | Branching/Versioning.
-
- |
-| `trino-coordinator` | Query Coordinator | `9080` | `8080` | **External** | Host port mapped to 9080 to avoid Airflow's 8080 conflict.
-
- |
-| `trino-worker-1` | Query Worker | - | `8080` | Internal | Executes Trino tasks.
-
- |
-| `airflow-apiserver` | Airflow UI/API | `8080` | `8080` | **External** | Airflow 3.0.6.
-
- |
-| `airflow-worker` | Task Executor | - | - | Internal | Runs the custom Python DbtOperator.
-
- |
-| *(Airflow Core)* | Scheduler, Triggerer | - | - | Internal | Orchestration background daemon services.
-
- |
+| :--- | :--- | :---: | :---: | :--- | :--- |
+| `postgres` | Airflow Metadata DB | - | `5432` | Internal | Stores Airflow DAG states and configurations[cite: 2]. |
+| `redis` | Celery Broker | - | `6379` | Internal | Message broker for Airflow CeleryExecutor[cite: 2]. |
+| `minio` | S3 Object Storage | `9000`, `9001` | `9000`, `9001` | **External** | API (9000), Console Browser (9001)[cite: 2]. |
+| `nessie-catalog` | Iceberg Catalog | `19120` | `19120` | **External** | Branching/Versioning[cite: 2]. |
+| `trino-coordinator`| Query Coordinator | `9080` | `8080` | **External** | Host port mapped to 9080 to avoid Airflow's 8080 conflict[cite: 2]. |
+| `trino-worker-1` | Query Worker | - | `8080` | Internal | Executes Trino tasks[cite: 2]. |
+| `airflow-apiserver`| Airflow UI/API | `8080` | `8080` | **External** | Airflow 3.0.6[cite: 2]. |
+| `airflow-worker` | Task Executor | - | - | Internal | Runs the custom Python DbtOperator[cite: 2]. |
+| *(Airflow Core)* | Scheduler, Triggerer | - | - | Internal | Orchestration background daemon services[cite: 2]. |
 
 ---
 
 ## 🔌 Service Endpoints
 
 | Service | Host URL | Container URL | Purpose |
-| --- | --- | --- | --- |
-| **Airflow UI** | `http://localhost:8080` | `http://airflow-apiserver:8080` | Monitor DAG runs, task logs, and schedules.
-
- |
-| **Trino UI** | `http://localhost:9080` | `http://trino-coordinator:8080` | View query execution plans and worker stats.
-
- |
-| **MinIO API** | `http://localhost:9000` | `http://minio:9000` | S3 API Endpoint for Iceberg table file writes.
-
- |
-| **MinIO Console** | `http://localhost:9001` | `http://minio:9001` | Object browser UI to inspect Parquet data files.
-
- |
-| **Nessie Catalog** | `http://localhost:19120` | `http://nessie-catalog:19120` | Catalog REST API for querying metadata branches.
-
- |
+| :--- | :--- | :--- | :--- |
+| **Airflow UI** | `http://localhost:8080` | `http://airflow-apiserver:8080` | Monitor DAG runs, task logs, and schedules[cite: 2]. |
+| **Trino UI** | `http://localhost:9080` | `http://trino-coordinator:8080` | View query execution plans and worker stats[cite: 2]. |
+| **MinIO API** | `http://localhost:9000` | `http://minio:9000` | S3 API Endpoint for Iceberg table file writes[cite: 2]. |
+| **MinIO Console** | `http://localhost:9001` | `http://minio:9001` | Object browser UI to inspect Parquet data files[cite: 2]. |
+| **Nessie Catalog**| `http://localhost:19120` | `http://nessie-catalog:19120` | Catalog REST API for querying metadata branches[cite: 2]. |
 
 ---
 
 ## 🔍 Deep Component Breakdown
 
 ### 🌬️ Apache Airflow & Custom `DbtOperator`
-
-Airflow acts strictly as an orchestrator ("When and how to execute") rather than performing data transformations itself. To bridge Airflow and dbt elegantly, a custom **`DbtOperator`** was developed in Python extending Airflow's `BaseOperator`. This class uses the `dbtRunner` API to execute dbt commands directly inside the Airflow worker memory, rather than relying on clumsy Bash subshells.
+Airflow acts strictly as an orchestrator ("When and how to execute") rather than performing data transformations itself[cite: 2]. To bridge Airflow and dbt elegantly, a custom **`DbtOperator`** was developed in Python extending Airflow's `BaseOperator`[cite: 2]. This class uses the `dbtRunner` API to execute dbt commands directly inside the Airflow worker memory, rather than relying on clumsy Bash subshells[cite: 2].
 
 ### 🛠️ dbt Core (Data Build Tool)
-
-dbt handles all data transformations ("How the data is modified").
-
-* **Tags & Execution**: The Airflow DAG triggers dbt models sequentially using tags (`dbt run --select tag:bronze`, then `tag:silver`, then `tag:gold`).
-
-
-* **Testing**: Data quality assertions (`unique`, `not_null`) are defined in `schema.yml` and run against the Iceberg tables via `dbt test` to ensure referential integrity.
-
-
+dbt handles all data transformations ("How the data is modified")[cite: 2]. 
+*   **Tags & Execution**: The Airflow DAG triggers dbt models sequentially using tags (`dbt run --select tag:bronze`, then `tag:silver`, then `tag:gold`)[cite: 2].
+*   **Testing**: Data quality assertions (`unique`, `not_null`) are defined in `schema.yml` and run against the Iceberg tables via `dbt test` to ensure referential integrity[cite: 2].
 
 ### ⚡ Trino (Query Engine)
-
-Trino is the distributed SQL engine executing the actual queries ("Who executes the SQL"). It is connected to the Iceberg catalog via its `iceberg.properties` configuration. Trino evaluates predicates, performs data skipping, and reads/writes the Parquet files stored in MinIO.
+Trino is the distributed SQL engine executing the actual queries ("Who executes the SQL")[cite: 2]. It is connected to the Iceberg catalog via its `iceberg.properties` configuration[cite: 2]. Trino evaluates predicates, performs data skipping, and reads/writes the Parquet files stored in MinIO[cite: 2].
 
 ### 🧊 Project Nessie & Apache Iceberg
+*   **Iceberg**: Manages the open table format metadata (Snapshots $\rightarrow$ Manifest Lists $\rightarrow$ Manifest Files $\rightarrow$ Parquet) allowing for data skipping, concurrent writes, and time travel[cite: 2].
+*   **Nessie**: Acts as "Git for Data". It allows Trino to point to different branches of the catalog (e.g., `main` vs `dev`). You can isolate development transformations in the `dev` branch without affecting production `main` data[cite: 2].
 
-* **Iceberg**: Manages the open table format metadata (Snapshots $\rightarrow$ Manifest Lists $\rightarrow$ Manifest Files $\rightarrow$ Parquet) allowing for data skipping, concurrent writes, and time travel.
-
-
-* **Nessie**: Acts as "Git for Data". It allows Trino to point to different branches of the catalog (e.g., `main` vs `dev`). You can isolate development transformations in the `dev` branch without affecting production `main` data.
-
+---
 ---
 
 ## 📁 Project Structure
