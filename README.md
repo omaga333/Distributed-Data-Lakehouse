@@ -219,19 +219,14 @@ The environment is strictly containerized via Docker Compose. Understanding the 
 | Service | Host URL | Container URL | Purpose |
 | --- | --- | --- | --- |
 | **Airflow UI** | `http://localhost:8080` | `http://airflow-apiserver:8080` | Monitor DAG runs, task logs, and schedules.
-
  |
 | **Trino UI** | `http://localhost:9080` | `http://trino-coordinator:8080` | View query execution plans and worker stats.
-
  |
 | **MinIO API** | `http://localhost:9000` | `http://minio:9000` | S3 API Endpoint for Iceberg table file writes.
-
  |
 | **MinIO Console** | `http://localhost:9001` | `http://minio:9001` | Object browser UI to inspect Parquet data files.
-
  |
 | **Nessie Catalog** | `http://localhost:19120` | `http://nessie-catalog:19120` | Catalog REST API for querying metadata branches.
-
  |
 
 ---
