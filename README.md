@@ -5,7 +5,8 @@
 # 🏛️ Distributed Data Lakehouse
 
 ### Enterprise-Grade Lakehouse Architecture Powered by Trino, Apache Iceberg, Project Nessie, dbt Core & Apache Airflow
-![Uploading Screenshot 2026-08-27 182047.png…]()
+
+<img width="1018" height="566" alt="Screenshot 2026-08-27 182047" src="https://github.com/user-attachments/assets/c529f397-28d7-4f96-a41b-a2ec67f19a37" />
 
 ---
 
