@@ -110,6 +110,9 @@ flowchart TB
 ده **الجزء التاني** (بيحتوي على الـ Workflow، تفاصيل الـ Medallion Model، الـ Docker Infrastructure، ونقاط الـ Endpoints والـ Components):
 
 ---
+تم تعديل تنسيق الجداول (بإزالة الرموز التعبيرية وتوحيد الفواصل) لضمان ظهورها بشكل سليم على أي محرر Markdown أو GitHub. إليك **الجزء الثاني** بالكامل جاهزاً للنسخ:
+
+---
 
 ## 🔄 End-to-End Data Workflow
 
@@ -165,15 +168,21 @@ The lakehouse adopts the Medallion Architecture to progressively improve data st
 
 | Layer | Objective & Transformations | Examples from E-commerce Data |
 | --- | --- | --- |
-| **Bronze** 🥉 | Stores raw source data. Modifies timestamps, handles empty strings (`''` to `NULL`), and adds audit metadata (`ingested_at`, `source_system`).
+| **Bronze** | Stores raw source data. Modifies timestamps, handles empty strings (`''` to `NULL`), and adds audit metadata (`ingested_at`, `source_system`).
 
- | `bronze_customer_events`, `bronze_inventory_snapshots`, `bronze_payment_transactions`, `bronze_support_tickets`<br> |
-| **Silver** 🥈 | Data cleaning, standardizing, and applying business logic. Handles sessionization (grouping user clicks), risk profiling for payments, and stock categorizations (Out of Stock, Low Stock).
+ | `bronze_customer_events`, `bronze_inventory_snapshots`, `bronze_payment_transactions`, `bronze_support_tickets`.
 
- | `silver_customer_sessions`, `silver_inventory_status`, `silver_payment_profiles`, `silver_support_metrics`<br> |
-| **Gold** 🥇 | Business-ready data. Pre-calculates heavy metrics, KPIs, aggregations, and daily rollups. Ready for BI tools (Power BI, Tableau) to consume directly without processing lag.
+ |
+| **Silver** | Data cleaning, standardizing, and applying business logic. Handles sessionization (grouping user clicks), risk profiling for payments, and stock categorizations (Out of Stock, Low Stock).
 
- | `gold_daily_metrics`, `gold_customer_summary`, `gold_product_summary`<br> |
+ | `silver_customer_sessions`, `silver_inventory_status`, `silver_payment_profiles`, `silver_support_metrics`.
+
+ |
+| **Gold** | Business-ready data. Pre-calculates heavy metrics, KPIs, aggregations, and daily rollups. Ready for BI tools (Power BI, Tableau) to consume directly without processing lag.
+
+ | `gold_daily_metrics`, `gold_customer_summary`, `gold_product_summary`.
+
+ |
 
 ---
 
@@ -267,11 +276,6 @@ Trino is the distributed SQL engine executing the actual queries ("Who executes 
 
 
 * **Nessie**: Acts as "Git for Data". It allows Trino to point to different branches of the catalog (e.g., `main` vs `dev`). You can isolate development transformations in the `dev` branch without affecting production `main` data.
-
-
-
----
-
 
 ---
 
