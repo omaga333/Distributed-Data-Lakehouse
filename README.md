@@ -449,14 +449,6 @@ SELECT * FROM iceberg.lakehouse.test_table;
 
 **Current Status:** Active Development / Learning / Portfolio Project
 
-### Planned Future Improvements
-
-* [ ] **Apache Spark**: Integrate Spark for heavy ML feature processing.
-* [ ] **Streaming Ingestion**: Introduce Apache Kafka / Redpanda for real-time E-commerce events.
-* [ ] **Data Quality Checkpoints**: Implement Soda Core or Great Expectations for robust pipeline assertions before publishing to the Gold layer.
-* [ ] **Cloud Migration**: Provide Terraform configuration to deploy the stack to AWS (EKS, S3, RDS).
-* [ ] **CI/CD pipeline**: Add GitHub Actions for linting SQL (`sqlfluff`) and automated testing of dbt models.
-
 ---
 
 **Author**: [omaga333](https://www.google.com/search?q=https://github.com/omaga333) | **Repository**: [Distributed-Data-Lakehouse](https://github.com/omaga333/Distributed-Data-Lakehouse)
