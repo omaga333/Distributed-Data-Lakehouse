@@ -44,7 +44,8 @@ The **Distributed Data Lakehouse** is an end-to-end analytical data platform des
   <img src="https://img.shields.io/badge/PostgreSQL-13-4169E1?style=for-the-badge&logo=postgresql&logoColor=white" alt="PostgreSQL" />
   <img src="https://img.shields.io/badge/Redis-7.2-DC382D?style=for-the-badge&logo=redis&logoColor=white" alt="Redis" />
 </p>
-At its core, this project demonstrates a highly robust **ELT pipeline**:
+
+At its core, this project demonstrates a highly robust **ELT_pipeline** :
 
 * **Storage & Format**: Raw and processed data are stored in **MinIO** as highly optimized Parquet files managed by **Apache Iceberg** table formats.
 
